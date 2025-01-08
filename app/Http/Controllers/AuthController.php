@@ -8,8 +8,53 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @OA\Tag(
+ *     name="Authentication",
+ *     description="API untuk mengelola autentikasi pengguna"
+ * )
+ *
+ * @OA\Schema(
+ *     schema="Auth",
+ *     title="Schema Auth",
+ *     description="Schema user",
+ *     required={"name", "email", "password"},
+ *     @OA\Property(property="name", type="string", example="John Doe"),
+ *     @OA\Property(property="email", type="string", example="johndoe@example.com"),
+ *     @OA\Property(property="password", type="string", format="password", example="password123"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2024-01-07T12:00:00Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-01-07T12:00:00Z")
+ * )
+ */
+
 class AuthController extends Controller
 {
+    /**
+     * @OA\Post(
+     *      path="/register",
+     *      tags={"Authentication"},
+     *      summary="Registrasi pengguna baru",
+     *      description="Endpoint ini digunakan untuk mendaftarkan pengguna baru dan mengembalikan token akses.",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"name", "email", "password"},
+     *              @OA\Property(property="name", type="string", example="John Doe"),
+     *              @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *              @OA\Property(property="password", type="string", format="password", example="password123")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Registrasi berhasil",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="token", type="string", example="1|qwertyuiop1234567890")
+     *          )
+     *      ),
+     *      @OA\Response(response=400, description="Registrasi gagal"),
+     *      @OA\Response(response=500, description="Kesalahan server")
+     * )
+     */
     public function register(Request $request)
     {
         try {
@@ -33,6 +78,31 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *      path="/login",
+     *      tags={"Authentication"},
+     *      summary="Login pengguna",
+     *      description="Endpoint ini digunakan untuk login dan mendapatkan token akses.",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"email", "password"},
+     *              @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *              @OA\Property(property="password", type="string", format="password", example="password123")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Login berhasil",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="token", type="string", example="1|qwertyuiop1234567890")
+     *          )
+     *      ),
+     *      @OA\Response(response=400, description="Login gagal"),
+     *      @OA\Response(response=500, description="Kesalahan server")
+     * )
+     */
     public function login(Request $request)
     {
         try {
@@ -54,6 +124,26 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *      path="/logout",
+     *      tags={"Authentication"},
+     *      summary="Logout pengguna",
+     *      description="Endpoint ini digunakan untuk logout dan menghapus token akses saat ini.",
+     *      security={
+     *          {"sanctum": {}}
+     *      },
+     *      @OA\Response(
+     *          response=200,
+     *          description="Logout berhasil",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Logged out successfully")
+     *          )
+     *      ),
+     *      @OA\Response(response=400, description="Logout gagal"),
+     *      @OA\Response(response=500, description="Kesalahan server")
+     * )
+     */
     public function logout(Request $request)
     {
         try {
