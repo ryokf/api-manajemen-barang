@@ -18,9 +18,9 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
 });
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::fallback(function () {
-    return response()->json(['message' => 'Not Found'], 404);
+    return response()->json(['message' => ''], 404);
 });
